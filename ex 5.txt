@@ -1,0 +1,197 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MovieApp());
+}
+
+class MovieApp extends StatelessWidget {
+  const MovieApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: MovieListScreen(),
+    );
+  }
+}
+
+// ---------------- MOVIE MODEL ----------------
+class Movie {
+  String title;
+  String genre;
+  double rating;
+
+  Movie(this.title, this.genre, this.rating);
+}
+
+// ---------------- MOVIE LIST SCREEN ----------------
+class MovieListScreen extends StatefulWidget {
+  const MovieListScreen({super.key});
+
+  @override
+  State<MovieListScreen> createState() => _MovieListScreenState();
+}
+
+class _MovieListScreenState extends State<MovieListScreen> {
+  List<Movie> movies = [
+    Movie("Inception", "Sci-Fi", 4),
+    Movie("Interstellar", "Sci-Fi", 5),
+    Movie("Batman Begins", "Drama", 4),
+    Movie("Avengers", "Action", 3),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "Movie Ratings",
+          style: TextStyle(
+            color: Colors.lightBlue,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 2,
+          ),
+        ),
+        backgroundColor: Colors.grey[900],
+      ),
+      body: ListView.builder(
+        itemCount: movies.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => MovieDetailScreen(movie: movies[index]),
+                ),
+              );
+            },
+            child: Card(
+              margin: const EdgeInsets.all(10),
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    const Icon(Icons.movie, size: 40),
+                    const SizedBox(width: 15),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          movies[index].title,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(movies[index].genre),
+                        Row(
+                          children: List.generate(5, (i) {
+                            return Icon(
+                              i < movies[index].rating
+                                  ? Icons.star
+                                  : Icons.star_border,
+                              color: Colors.orange,
+                            );
+                          }),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+// ---------------- MOVIE DETAIL SCREEN ----------------
+class MovieDetailScreen extends StatefulWidget {
+  final Movie movie;
+
+  const MovieDetailScreen({super.key, required this.movie});
+
+  @override
+  State<MovieDetailScreen> createState() => _MovieDetailScreenState();
+}
+
+class _MovieDetailScreenState extends State<MovieDetailScreen> {
+  void updateRating(int value) {
+    setState(() {
+      widget.movie.rating = value.toDouble();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          widget.movie.title,
+          style: TextStyle(
+            color: Colors.lightBlue,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 2,
+          ),
+        ),
+        backgroundColor: Colors.grey[900],
+        iconTheme: const IconThemeData(
+          color: Colors.white, // back button color
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            Text(
+              widget.movie.genre,
+              style: const TextStyle(fontSize: 16),
+            ),
+
+            const SizedBox(height: 20),
+
+            const Text(
+              "Rate this movie:",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            Row(
+              children: List.generate(5, (index) {
+                return GestureDetector(
+                  onTap: () => updateRating(index + 1),
+                  child: Icon(
+                    index < widget.movie.rating
+                        ? Icons.star
+                        : Icons.star_border,
+                    size: 40,
+                    color: Colors.orange,
+                  ),
+                );
+              }),
+            ),
+
+            const SizedBox(height: 20),
+
+            Text(
+              "Your Rating: ${widget.movie.rating}/5",
+              style: const TextStyle(fontSize: 16),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+

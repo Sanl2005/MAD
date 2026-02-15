@@ -1,0 +1,70 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MaterialApp(
+    home: ThemeChanger(),
+  ));
+}
+
+
+class ThemeChanger extends StatefulWidget {
+  const ThemeChanger({super.key});
+
+  @override
+  State<ThemeChanger> createState() => _ThemeChangerState();
+}
+
+class _ThemeChangerState extends State<ThemeChanger> {
+  bool isDarkmode = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: isDarkmode? Colors.grey[850]: Colors.white,
+      appBar: AppBar(
+        title: Text(
+            'Theme Changer',
+          style: TextStyle(
+            color: isDarkmode? Colors.white: Colors.black,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: isDarkmode? Colors.black45: Colors.grey[200],
+      ),
+
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              isDarkmode? Icons.dark_mode_outlined: Icons.light_mode_outlined,
+              size: 47,
+              color: isDarkmode? Colors.white: Colors.black,
+            ),
+            SizedBox(height: 20,),
+            Text(
+              isDarkmode? 'Dark Mode' : 'Light Mode',
+              style: TextStyle(
+                color: isDarkmode? Colors.amber: Colors.lightBlue,
+                fontSize: 30.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 20,),
+            Switch(
+                value: isDarkmode,
+                onChanged: (value){
+                  setState(() {
+                    isDarkmode = value;
+                  });
+                }
+            )
+          ],
+        ),
+      ),
+
+    );
+  }
+}
+

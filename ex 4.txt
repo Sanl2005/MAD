@@ -1,0 +1,91 @@
+import 'dart:math';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const GameApp());
+}
+
+class GameApp extends StatelessWidget {
+  const GameApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: CatchBallGame(),
+    );
+  }
+}
+
+class CatchBallGame extends StatefulWidget {
+  const CatchBallGame({super.key});
+
+  @override
+  State<CatchBallGame> createState() => _CatchBallGameState();
+}
+
+class _CatchBallGameState extends State<CatchBallGame> {
+  double x = 100;
+  double y = 200;
+  int score = 0;
+  final Random random = Random();
+
+  void moveBall(Size size) {
+    setState(() {
+      x = random.nextDouble() * (size.width - 60);
+      y = random.nextDouble() * (size.height - 200);
+      score++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Catch The Ball"),
+        backgroundColor: Colors.deepPurple,
+      ),
+      body: Stack(
+        children: [
+
+          // Background
+          Container(color: Colors.blue.shade50),
+
+          // Score
+          Positioned(
+            top: 20,
+            left: 20,
+            child: Text(
+              "Score: $score",
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+
+          // Animated Ball
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeInOut,
+            left: x,
+            top: y,
+            child: GestureDetector(
+              onTap: () => moveBall(size),
+              child: Container(
+                width: 60,
+                height: 60,
+                decoration: const BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
